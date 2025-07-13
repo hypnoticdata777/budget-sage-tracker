@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Budget Sage</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans p-4">
+
+  <h1 class="text-2xl font-bold mb-4">🧭 Budget Sage</h1>
+
+  <form id="transaction-form" class="bg-white p-4 rounded shadow mb-4">
+    <h2 class="text-lg font-semibold mb-2">Add Transaction</h2>
+
+    <input type="text" id="description" placeholder="Description" required class="w-full border p-2 rounded mb-2"/>
+
+    <input type="number" id="amount" placeholder="Amount" required class="w-full border p-2 rounded mb-2"/>
+
+    <select id="type" class="w-full border p-2 rounded mb-4">
+      <option value="Income">Income</option>
+      <option value="Expense">Expense</option>
+    </select>
+
+    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 w-full">
+      Save Transaction
+    </button>
+  </form>
+
+  <section class="bg-white p-4 rounded shadow mb-4">
+    <h2 class="text-xl font-semibold mb-2">Summary</h2>
+    <p>Total Income: <span class="total-income text-green-600 font-bold">$0</span></p>
+    <p>Total Expenses: <span class="total-expenses text-red-600 font-bold">$0</span></p>
+    <p>Balance: <span class="balance-total text-blue-600 font-bold">$0</span></p>
+  </section>
+
+  <section class="bg-white p-4 rounded shadow">
+    <h2 class="text-xl font-semibold mb-2">Transaction History</h2>
+    <ul id="transaction-list" class="space-y-2"></ul>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
