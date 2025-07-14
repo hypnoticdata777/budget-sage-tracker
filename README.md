@@ -1,22 +1,22 @@
-# 📊 Budget Sage Tracker
+# Budget Sage Tracker
 
 Welcome to **Budget Sage**, a clean, simple, and intuitive web app to help you track your income and expenses.  
-Built with 🔥 HTML, TailwindCSS, and JavaScript — this is the first official entry in my coding portfolio.
+Built with HTML, TailwindCSS, and JavaScript — this is the first official entry in my coding portfolio.
 
 ---
 
-## 🚀 Features
+## Features
 
-- ✅ Add transactions (income or expenses)
-- ✏️ Edit transactions in-place
-- ❌ Delete individual entries
-- 💾 Persistent storage using `localStorage`
-- 📈 Live summary of Total Income, Expenses, and Balance
-- 🧠 Clean and responsive UI using TailwindCSS
+-  Add transactions (income or expenses)
+-  Edit transactions in-place
+-  Delete individual entries
+-  Persistent storage using `localStorage`
+- Live summary of Total Income, Expenses, and Balance
+- Clean and responsive UI using TailwindCSS
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Tech         | Use                              |
 |--------------|-----------------------------------|
@@ -27,7 +27,7 @@ Built with 🔥 HTML, TailwindCSS, and JavaScript — this is the first official
 
 ---
 
-## 🧠 Core Logic
+## Core Logic
 
 Transactions are stored as an array of objects like this:
 
@@ -48,7 +48,7 @@ deleteTransaction(id) → Filters out by ID
 updateSummary() → Recalculates income, expense, and balance
 
 Data saved to and loaded from localStorage
-📦 How to Run
+ How to Run
 Clone this repo
 
 Open index.html in your browser
