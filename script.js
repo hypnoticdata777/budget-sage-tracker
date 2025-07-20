@@ -37,8 +37,9 @@ function renderTransaction(transaction) {
   const date = new Date(transaction.date || Date.now());
   const formattedDate = date.toLocaleString('en-US', {
     dateStyle: 'medium',
-    timeStyle: 'short'
-  });
+        timeStyle: 'short'
+      });
+    
 
   li.innerHTML = `
     <span>${transaction.description}</span>
@@ -101,42 +102,57 @@ form.addEventListener("submit", (e) => {
 const toggleBtn = document.getElementById("toggle-theme");
 const body = document.body;
 
-document.addEventListener(`DOMContentLoaded`, () => {
-  // Dummy values for now (we´ll make them dynamic later)
-  let income = 500;
-  let expenses = 300;
+document.addEventListener("DOMContentLoaded", () => {
+  // Function to calculate totals
+  function calculateTotals(transactions) {
+    let income = 0;
+    let expenses = 0;
 
-  const ctx = document.getElementById(`budgetChart`).getContext (`2d`);
+    transactions.forEach((t) => {
+      if (t.type === "Income") {
+        income += t.amount;
+      } else if (t.type === "Expense") {
+        expenses += t.amount;
+      }
+    });
+
+    return [income, expenses];
+  }
+
+  // Use your actual transaction data here
+  const [income, expenses] = calculateTotals(transactions);
+
+  const ctx = document.getElementById("budgetChart").getContext("2d");
 
   const budgetChart = new Chart(ctx, {
-    type: `pie`,
+    type: "pie",
     data: {
-      labels: [`Income`, `Expenses`],
-      datasets: [{
-        label: `Budget Overview`,
-        data: [income, expenses],
-        backgroundColor: [`#36A2EB`, `#FF6384`],
-        borderColor: [`#ffffff`, `#ffffff`],
-        borderWidth: 1
-
-      }]
-
+      labels: ["Income", "Expenses"],
+      datasets: [
+        {
+          label: "Budget Overview",
+          data: [income, expenses],
+          backgroundColor: ["#36A2EB", "#FF6384"],
+          borderColor: ["#ffffff", "#ffffff"],
+          borderWidth: 1
+        }
+      ]
     },
     options: {
       responsive: true,
-      plgins: {
+      plugins: {
         legend: {
-          position: `bottom`,
+          position: "bottom",
           labels: {
-            color:`#333`,
+            color: "#333",
             font: {
               size: 14
             }
           }
         },
         title: {
-          display:true,
-          text: `Income vs Expense`,
+          display: true,
+          text: "Income vs Expense",
           font: {
             size: 16
           }
