@@ -1,163 +1,118 @@
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('transaction-form');
+  const descriptionInput = document.getElementById('description');
+  const amountInput = document.getElementById('amount');
+  const typeInput = document.getElementById('type');
+  const transactionList = document.getElementById('transaction-list');
+  const incomeDisplay = document.getElementById('income');
+  const expensesDisplay = document.getElementById('expenses');
+  const balanceDisplay = document.getElementById('balance');
 
-// ===== GLOBALS =====
-let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
-let editId = null;
+  let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 
-// ===== DOM ELEMENTS =====
-const form = document.querySelector("form");
-const descriptionInput = document.getElementById("description");
-const amountInput = document.getElementById("amount");
-const typeInput = document.getElementById("type");
-const transactionList = document.getElementById("transaction-list");
-const incomeTotal = document.getElementById("income-total");
-const expenseTotal = document.getElementById("expense-total");
-const balanceTotal = document.getElementById("balance-total");
-
-// ===== UPDATE SUMMARY =====
-function updateSummary() {
-  const income = transactions
-    .filter((t) => t.type === "Income")
-    .reduce((sum, t) => sum + t.amount, 0);
-  const expenses = transactions
-    .filter((t) => t.type === "Expense")
-    .reduce((sum, t) => sum + t.amount, 0);
-  const balance = income - expenses;
-
-  incomeTotal.textContent = `$${income}`;
-  expenseTotal.textContent = `$${expenses}`;
-  balanceTotal.textContent = `$${balance}`;
-}
-
-// ===== RENDER TRANSACTION =====
-function renderTransaction(transaction) {
-  const li = document.createElement("li");
-  li.className = `transaction ${transaction.type.toLowerCase()}`;
-
-  // Generate formatted date
-  const date = new Date(transaction.date || Date.now());
-  const formattedDate = date.toLocaleString('en-US', {
-    dateStyle: 'medium',
-        timeStyle: 'short'
-      });
-    
-
-  li.innerHTML = `
-    <span>${transaction.description}</span>
-    <span>$${transaction.amount}</span>
-    <span class="type">${transaction.type}</span>
-    <small class="timestamp">🕓 ${formattedDate}</small>
-    <button onclick="deleteTransaction(${transaction.id})">❌</button>
-  `;
-
-  transactionList.appendChild(li);
-}
-
-// ===== SAVE TRANSACTIONS TO LOCALSTORAGE =====
-function saveTransactions() {
-  localStorage.setItem("transactions", JSON.stringify(transactions));
-}
-
-// ===== DELETE TRANSACTION =====
-function deleteTransaction(id) {
-  transactions = transactions.filter(t => t.id !== id);
-  saveTransactions();
-  renderAllTransactions();
-  updateSummary();
-}
-
-// ===== RENDER ALL TRANSACTIONS =====
-function renderAllTransactions() {
-  transactionList.innerHTML = "";
-  transactions.forEach(renderTransaction);
-}
-
-// ===== FORM SUBMIT =====
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-
-  const description = descriptionInput.value.trim();
-  const amount = parseFloat(amountInput.value);
-  const type = typeInput.value;
-
-  if (!description || isNaN(amount)) return;
-
-  const newTransaction = {
-  id: Date.now(),
-  description,
-  amount,
-  type,
-  date: new Date().toISOString() //  This line adds the creation time
-};
-
-
-  transactions.push(newTransaction);
-  saveTransactions();
-  renderTransaction(newTransaction);
-  updateSummary();
-
-  form.reset();
-});
-
-// ===== THEME TOGGLE =====
-const toggleBtn = document.getElementById("toggle-theme");
-const body = document.body;
-
-document.addEventListener("DOMContentLoaded", () => {
-  // Function to calculate totals
-  function calculateTotals(transactions) {
-    let income = 0;
-    let expenses = 0;
-
-    transactions.forEach((t) => {
-      if (t.type === "Income") {
-        income += t.amount;
-      } else if (t.type === "Expense") {
-        expenses += t.amount;
-      }
-    });
-
-    return [income, expenses];
+  function saveTransactions() {
+    localStorage.setItem('transactions', JSON.stringify(transactions));
   }
 
-  // Use your actual transaction data here
-  const [income, expenses] = calculateTotals(transactions);
+  function renderTransactions() {
+    transactionList.innerHTML = '';
+    transactions.forEach((transaction, index) => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span>${transaction.description} - $${transaction.amount}</span>
+        <span class="date">${transaction.date}</span>
+        <button class="delete-btn" onclick="deleteTransaction(${index})">❌</button>
+      `;
+      transactionList.appendChild(li);
+    });
+  }
 
-  const ctx = document.getElementById("budgetChart").getContext("2d");
+function updateSummary() {
+  const totalIncome = transactions
+    .filter(t => t.type.toLowerCase() === 'income')
+    .reduce((sum, t) => sum + t.amount, 0);
+  const totalExpenses = transactions
+    .filter(t => t.type.toLowerCase() === 'expense')
+    .reduce((sum, t) => sum + t.amount, 0);
+  const balance = totalIncome - totalExpenses;
 
-  const budgetChart = new Chart(ctx, {
-    type: "pie",
+  incomeDisplay.textContent = `$${totalIncome.toFixed(2)}`;
+  expensesDisplay.textContent = `$${totalExpenses.toFixed(2)}`;
+  balanceDisplay.textContent = `$${balance.toFixed(2)}`;
+
+  renderChart(totalIncome, totalExpenses);
+}
+
+
+  function deleteTransaction(index) {
+    transactions.splice(index, 1);
+    saveTransactions();
+    renderTransactions();
+    updateSummary();
+  }
+
+  window.deleteTransaction = deleteTransaction;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const description = descriptionInput.value.trim();
+    const amount = parseFloat(amountInput.value.trim());
+    const type = typeInput.value;
+
+    if (!description || isNaN(amount)) {
+      alert('Please enter a valid description and amount');
+      return;
+    }
+
+    const today = new Date();
+    const dateString = today.toISOString().split('T')[0];
+
+    transactions.push({
+      description,
+      amount,
+      type,
+      date: dateString
+    });
+
+    saveTransactions();
+    renderTransactions();
+    updateSummary();
+
+    form.reset();
+  });
+
+  renderTransactions();
+  updateSummary();
+});
+
+// === PIE CHART SECTION ===
+let chart;
+
+function renderChart(income, expense) {
+  const ctx = document.getElementById('budgetChart').getContext('2d');
+
+  if (chart) {
+    chart.destroy(); // Avoid duplicate charts
+  }
+
+  chart = new Chart(ctx, {
+    type: 'pie',
     data: {
-      labels: ["Income", "Expenses"],
-      datasets: [
-        {
-          label: "Budget Overview",
-          data: [income, expenses],
-          backgroundColor: ["#36A2EB", "#FF6384"],
-          borderColor: ["#ffffff", "#ffffff"],
-          borderWidth: 1
-        }
-      ]
+      labels: ['Income', 'Expenses'],
+      datasets: [{
+        data: [income, expense],
+        backgroundColor: ['#4CAF50', '#F44336'],
+        borderWidth: 1
+      }]
     },
     options: {
       responsive: true,
       plugins: {
         legend: {
-          position: "bottom",
-          labels: {
-            color: "#333",
-            font: {
-              size: 14
-            }
-          }
-        },
-        title: {
-          display: true,
-          text: "Income vs Expense",
-          font: {
-            size: 16
-          }
+          position: 'bottom',
         }
       }
     }
   });
-});
+}

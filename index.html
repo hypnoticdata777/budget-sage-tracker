@@ -3,49 +3,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Budget Sage</title>
+  <title>Budget Sage Tracker</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <div class="top-section">
-  <div class="left-panel">
-    <section class="form-section">
-      <h2>Add Transaction</h2>
-      <form>
+  <div class="container">
+    
+    <!-- Left Panel -->
+    <div class="left-panel">
+      <form id="transaction-form">
         <input type="text" id="description" placeholder="Description" required />
         <input type="number" id="amount" placeholder="Amount" required />
         <select id="type">
-          <option value="Income">Income</option>
-          <option value="Expense">Expense</option>
+          <option value="income">Income</option>
+          <option value="expense">Expense</option>
         </select>
         <button type="submit">Save Transaction</button>
       </form>
-    </section>
 
-    <section class="summary">
-      <h2>Summary</h2>
-      <p>Total Income: <span id="income-total">$0</span></p>
-      <p>Total Expenses: <span id="expense-total">$0</span></p>
-      <p>Balance: <span id="balance-total">$0</span></p>
-    </section>
+      <div class="summary">
+        <h3>Summary</h3>
+        <p>Total Income: <span id="income">$0</span></p>
+        <p>Total Expenses: <span id="expenses">$0</span></p>
+        <p>Balance: <span id="balance">$0</span></p>
+      </div>
+    </div>
+
+    <!-- Middle Panel -->
+    <div class="middle-panel">
+      <h3>Transaction History</h3>
+      <ul id="transaction-list"></ul>
+    </div>
+
+    <!-- Right Panel (Pie Chart) -->
+    <div class="right-panel">
+      <canvas id="budgetChart" width="300" height="300"></canvas>
+    </div>
   </div>
-<section class="history">
-  <h2>Transaction History</h2>
-  <ul id="transaction-list">
-    <!-- Transactions will appear here -->
-  </ul>
-</section>
 
-  <div class="right-panel">
-    <canvas id="budgetChart" width="400" height="400"></canvas>
-  </div>
-</div>
-
-console.log("🟩 Budget Chart script loaded!");
-
-  <script src="script.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
-
-
