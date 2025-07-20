@@ -3,16 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>💰 Budget Sage</title>
+  <title>Budget Sage</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>🧭 Budget Sage</h1>
-      <button id="toggle-theme">🌙</button>
-    </header>
-
+  <div class="top-section">
+  <div class="left-panel">
     <section class="form-section">
       <h2>Add Transaction</h2>
       <form>
@@ -32,14 +28,23 @@
       <p>Total Expenses: <span id="expense-total">$0</span></p>
       <p>Balance: <span id="balance-total">$0</span></p>
     </section>
-
-    <section class="history">
-      <h2>Transaction History</h2>
-      <ul id="transaction-list"></ul>
-    </section>
   </div>
+<section class="history">
+  <h2>Transaction History</h2>
+  <ul id="transaction-list">
+    <!-- Transactions will appear here -->
+  </ul>
+</section>
+
+  <div class="right-panel">
+    <canvas id="budgetChart" width="400" height="400"></canvas>
+  </div>
+</div>
+
+console.log("🟩 Budget Chart script loaded!");
 
   <script src="script.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
 

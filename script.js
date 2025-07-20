@@ -32,12 +32,22 @@ function updateSummary() {
 function renderTransaction(transaction) {
   const li = document.createElement("li");
   li.className = `transaction ${transaction.type.toLowerCase()}`;
+
+  // Generate formatted date
+  const date = new Date(transaction.date || Date.now());
+  const formattedDate = date.toLocaleString('en-US', {
+    dateStyle: 'medium',
+    timeStyle: 'short'
+  });
+
   li.innerHTML = `
     <span>${transaction.description}</span>
     <span>$${transaction.amount}</span>
     <span class="type">${transaction.type}</span>
+    <small class="timestamp">🕓 ${formattedDate}</small>
     <button onclick="deleteTransaction(${transaction.id})">❌</button>
   `;
+
   transactionList.appendChild(li);
 }
 
@@ -71,11 +81,13 @@ form.addEventListener("submit", (e) => {
   if (!description || isNaN(amount)) return;
 
   const newTransaction = {
-    id: Date.now(),
-    description,
-    amount,
-    type,
-  };
+  id: Date.now(),
+  description,
+  amount,
+  type,
+  date: new Date().toISOString() //  This line adds the creation time
+};
+
 
   transactions.push(newTransaction);
   saveTransactions();
@@ -88,3 +100,48 @@ form.addEventListener("submit", (e) => {
 // ===== THEME TOGGLE =====
 const toggleBtn = document.getElementById("toggle-theme");
 const body = document.body;
+
+document.addEventListener(`DOMContentLoaded`, () => {
+  // Dummy values for now (we´ll make them dynamic later)
+  let income = 500;
+  let expenses = 300;
+
+  const ctx = document.getElementById(`budgetChart`).getContext (`2d`);
+
+  const budgetChart = new Chart(ctx, {
+    type: `pie`,
+    data: {
+      labels: [`Income`, `Expenses`],
+      datasets: [{
+        label: `Budget Overview`,
+        data: [income, expenses],
+        backgroundColor: [`#36A2EB`, `#FF6384`],
+        borderColor: [`#ffffff`, `#ffffff`],
+        borderWidth: 1
+
+      }]
+
+    },
+    options: {
+      responsive: true,
+      plgins: {
+        legend: {
+          position: `bottom`,
+          labels: {
+            color:`#333`,
+            font: {
+              size: 14
+            }
+          }
+        },
+        title: {
+          display:true,
+          text: `Income vs Expense`,
+          font: {
+            size: 16
+          }
+        }
+      }
+    }
+  });
+});
